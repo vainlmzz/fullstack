@@ -19,6 +19,21 @@ const Display = (props) => {
 
 
 
+const Statistics = (props) => {
+  return (
+  <div>
+  <Header name={"statistics"} />
+  <Display name={"good"} lkm={props.good}/>
+  <Display name={"neutral"} lkm={props.neutral}/>
+  <Display name={"bad"} lkm={props.bad}/>
+  <Display name={"all"} lkm={props.good + props.neutral + props.bad}/>
+  <Display name={"average"} lkm={(props.good - props.bad) / (props.good+props.neutral+props.bad)}/>
+  <Display name={"positive"} lkm={(props.good/ (props.good+props.neutral+props.bad)*100) + " %"}/>
+
+  </div>
+  )
+}
+
 
 const App = () => {
   // tallenna napit omaan tilaansa
@@ -40,13 +55,7 @@ const App = () => {
       <button onClick={() => setBad(bad + 1)}> 
         bad
       </button>
-      <Header name={"statistics"} />
-      <Display name={"good"} lkm={good}/>
-      <Display name={"neutral"} lkm={neutral}/>
-      <Display name={"bad"} lkm={bad}/>
-      <Display name={"all"} lkm={good + neutral + bad}/>
-      <Display name={"average"} lkm={(good - bad) / (good+neutral+bad)}/>
-      <Display name={"positive"} lkm={(good/ (good+neutral+bad)*100) + " %"}/>
+      <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
     )
   }
