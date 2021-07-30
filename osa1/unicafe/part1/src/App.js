@@ -26,6 +26,8 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+  
+
   return (
     <div>
       <Header name={"give feedback"} />
@@ -42,6 +44,9 @@ const App = () => {
       <Display name={"good"} lkm={good}/>
       <Display name={"neutral"} lkm={neutral}/>
       <Display name={"bad"} lkm={bad}/>
+      <Display name={"all"} lkm={good + neutral + bad}/>
+      <Display name={"average"} lkm={(good - bad) / (good+neutral+bad)}/>
+      <Display name={"positive"} lkm={(good/ (good+neutral+bad)*100) + " %"}/>
     </div>
     )
   }
