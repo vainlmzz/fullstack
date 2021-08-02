@@ -18,11 +18,37 @@ const Display = (props) => {
 }
 
 
+const History = (props) => {
+  if (props.good + props.neutral + props.bad === 0) {
+    return (
+      <div>
+        <h1> Statistics</h1>
+        
+        No feedback given
+      </div>
+    )
+  }
+  return (
+    <div>
+      <Statistics good={props.good} neutral={props.neutral} bad={props.bad}/>
+    </div>
+  )
+}
+
+/* const Button = (props) => {
+  return (
+    <button onClick={props.handleClick}>
+      {props.text}
+    </button>
+  )
+}
+
+*/
 
 const Statistics = (props) => {
   return (
   <div>
-  <Header name={"statistics"} />
+  <Header name={"Statistics"} />
   <Display name={"good"} lkm={props.good}/>
   <Display name={"neutral"} lkm={props.neutral}/>
   <Display name={"bad"} lkm={props.bad}/>
@@ -55,7 +81,7 @@ const App = () => {
       <button onClick={() => setBad(bad + 1)}> 
         bad
       </button>
-      <Statistics good={good} neutral={neutral} bad={bad}/>
+      <History good={good} neutral={neutral} bad={bad} />
     </div>
     )
   }
