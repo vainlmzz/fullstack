@@ -36,19 +36,40 @@ const Button = (props) => (
 )
 
 
-
-
 const Statistics = (props) => {
 
   return(
     <div>
       <h1>Statistics</h1>
-      <StatisticLine text="good" value ={props.good} />
-      <StatisticLine text="neutral" value ={props.neutral} />
-      <StatisticLine text="bad" value ={props.bad} />
-      <StatisticLine text="average" value ={(props.good - props.bad) / (props.good+props.neutral+props.bad)} />
-      <StatisticLine text="positive" value ={(props.good/ (props.good+props.neutral+props.bad)*100) + " %"} />
-  
+      
+      <table>
+        <thead>
+          <tr>
+            <td>good</td>
+            <td><StatisticLine value ={props.good} /></td>
+          </tr>
+          <tr>
+            <td>neutral</td>
+            <td><StatisticLine value ={props.neutral} /></td>
+          </tr>
+          <tr>
+            <td>bad</td>
+            <td><StatisticLine value ={props.bad} /></td>  
+          </tr>
+          <tr>
+            <td>all</td>
+            <td><StatisticLine value ={props.good + props.neutral + props.bad} /></td>  
+          </tr>
+          <tr>
+            <td>average</td>
+            <td><StatisticLine value ={(props.good - props.bad) / (props.good+props.neutral+props.bad)}/></td>  
+          </tr>
+          <tr>
+            <td>positive</td>
+            <td><StatisticLine value ={(props.good/ (props.good+props.neutral+props.bad)*100) + " %"}/></td>  
+          </tr>
+          </thead>
+      </table>
     </div>
   )
 }
@@ -56,14 +77,14 @@ const Statistics = (props) => {
 const StatisticLine = (props) => {
   return (
   <div>
-  {props.text} {props.value}
+  {props.value}
   </div>
   )
 }
 
 
 const App = () => {
-  // tallenna napit omaan tilaansa
+  
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
@@ -90,7 +111,6 @@ const App = () => {
   return (
     <div>
       <Header name={"give feedback"} />
-
       <Button handleClick={() => setValueG(good+1)} text={"good"}/> 
       <Button handleClick={() => setValueN(neutral+1)} text={"neutral"}/>
       <Button handleClick={() => setValueB(bad+1)} text={"bad"}/>  
@@ -100,9 +120,4 @@ const App = () => {
   }
   
     
-  /*
-  <Button handleClick={() => setValueG(good+1)} text={"good"} />
-  <Button handleClick={() => setValueN(neutral+1)} text={"neutral"} />
-  <Button handleClick={() => setValueB(bad+1)} text={"bad"} />
-  */
   export default App
