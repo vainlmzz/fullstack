@@ -11,12 +11,6 @@ const Header = (props) => {
   )
 }
 
-const Display = (props) => {
-  return (
-    <div>{props.name} {props.lkm}</div>
-  )
-}
-
 
 const History = (props) => {
   if (props.good + props.neutral + props.bad === 0) {
@@ -35,27 +29,34 @@ const History = (props) => {
   )
 }
 
-/* const Button = (props) => {
-  return (
-    <button onClick={props.handleClick}>
-      {props.text}
-    </button>
+const Button = (props) => (
+  <button onClick={props.handleClick}>
+    {props.text}
+  </button>
+)
+
+
+
+
+const Statistics = (props) => {
+
+  return(
+    <div>
+      <h1>Statistics</h1>
+      <StatisticLine text="good" value ={props.good} />
+      <StatisticLine text="neutral" value ={props.neutral} />
+      <StatisticLine text="bad" value ={props.bad} />
+      <StatisticLine text="average" value ={(props.good - props.bad) / (props.good+props.neutral+props.bad)} />
+      <StatisticLine text="positive" value ={(props.good/ (props.good+props.neutral+props.bad)*100) + " %"} />
+  
+    </div>
   )
 }
 
-*/
-
-const Statistics = (props) => {
+const StatisticLine = (props) => {
   return (
   <div>
-  <Header name={"Statistics"} />
-  <Display name={"good"} lkm={props.good}/>
-  <Display name={"neutral"} lkm={props.neutral}/>
-  <Display name={"bad"} lkm={props.bad}/>
-  <Display name={"all"} lkm={props.good + props.neutral + props.bad}/>
-  <Display name={"average"} lkm={(props.good - props.bad) / (props.good+props.neutral+props.bad)}/>
-  <Display name={"positive"} lkm={(props.good/ (props.good+props.neutral+props.bad)*100) + " %"}/>
-
+  {props.text} {props.value}
   </div>
   )
 }
@@ -67,23 +68,43 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  
+  const setValueG = (value) => {
+    return (
+      setGood(value)
+    )
+    
+  }
+
+  const setValueN = (value) => {
+    return (
+      setNeutral(value)
+    )
+    
+  }
+
+  const setValueB = (value) => {
+    return (
+      setBad(value)
+    )
+    
+  }
 
   return (
     <div>
       <Header name={"give feedback"} />
-      <button onClick={() => setGood(good + 1)}> 
-        good
-      </button>
-      <button onClick={() => setNeutral(neutral + 1)}> 
-        neutral
-      </button>
-      <button onClick={() => setBad(bad + 1)}> 
-        bad
-      </button>
+
+      <Button handleClick={() => setValueG(good+1)} text={"good"}/> 
+      <Button handleClick={() => setValueN(neutral+1)} text={"neutral"}/>
+      <Button handleClick={() => setValueB(bad+1)} text={"bad"}/>  
       <History good={good} neutral={neutral} bad={bad} />
     </div>
     )
   }
   
-    export default App
+    
+  /*
+  <Button handleClick={() => setValueG(good+1)} text={"good"} />
+  <Button handleClick={() => setValueN(neutral+1)} text={"neutral"} />
+  <Button handleClick={() => setValueB(bad+1)} text={"bad"} />
+  */
+  export default App
