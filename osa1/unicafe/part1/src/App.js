@@ -72,14 +72,12 @@ const App = () => {
     return (
       setGood(value)
     )
-    
   }
 
   const setValueN = (value) => {
     return (
       setNeutral(value)
     )
-    
   }
 
   const setValueB = (value) => {
