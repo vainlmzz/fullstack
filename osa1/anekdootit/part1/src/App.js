@@ -13,6 +13,21 @@ function ranNum(min, max) {
 }
 
 
+function largest(arr) {
+  var max = arr[0];
+  var maxIndex = 0;
+
+  for (var i = 1; i < Object.keys(arr).length; i++) {
+      if (arr[i] > max) {
+          maxIndex = i;
+          max = arr[i];
+      }
+  }
+  return maxIndex;
+}
+
+
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -24,16 +39,13 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.'
     ]
   
-
-  
-  
   const [selected, setSelected] = useState(0)
   const [points, setVote] = useState([0,0,0,0,0,0,0])
-
+  const [mostVotes, setMost] = useState(0)
   
   
-
   const setSel = (value) => {
+    
     return (
       setSelected(value)
     )
@@ -41,26 +53,28 @@ const App = () => {
 
   const setVo = () => {
     const copy = {...points}
+    copy[selected] += 1
+    let most = largest(copy)
     return (
-      copy[selected] += 1,
       setVote(copy),
-      console.log(points)
-      //console.log(copy)
+      setMost(most)
+      
     )
-    
   }
 
+  
   return (
     <div>
-      
+      <h1> Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p> has {points[selected]} votes</p>
       <Button handleClick={() => setVo()} text={"vote"}/> 
       <Button handleClick={() => setSel(ranNum(0,anecdotes.length-1))} text={"next anecdote"}/> 
-      
+      <h1> Anecdote with most votes</h1>
+      <p>{anecdotes[mostVotes]}</p>
+      <p> has {points[mostVotes]} votes</p> 
     </div>
   )
 }
 
-// <h1> Anecdote of the day</h1> <h1> Anecdote with most votes</h1>
 export default App
