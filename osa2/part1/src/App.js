@@ -16,9 +16,25 @@ const Course = ( {course} ) => {
     <div>
       <Header course={course}/>
       <Content course={course}/>
+      <Total course={course}/>
     </div>
   )
 }
+
+
+const Total = ( {course} ) => {
+  return (
+    <div>
+      <h4>
+        Total of {course.parts.reduce(function(sum, parts) {
+                      return sum + parts.exercises},
+                    0)
+                 } exercises
+      </h4>
+    </div>
+  )
+}
+
 
 
 //Sovelluksen täytyy nyt toimia riippumatta kurssissa olevien osien määrästä. Eli varmista, että 
@@ -71,6 +87,7 @@ const App = () => {
     ]
   }
 
+  
   return (
     <div>
       <Course course={course} />
