@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'boo' }
   ]) 
   const [ newName, setNewName ] = useState('')
 
@@ -11,9 +11,18 @@ const App = () => {
     const nameObject = {
       name: newName
     }
-  
-    setPersons(persons.concat(nameObject))
+    
+    
+
+    if (persons.some(person => person.name === newName))  {
+      window.alert(`${newName} löytyy jo puhelinluettelosta`)
+      /* vendors contains the element we're looking for */
+    }
+    else {
+      setPersons(persons.concat(nameObject))
     setNewName('')
+    }
+    
   }
 
   const handleNumChange = (event) => {
