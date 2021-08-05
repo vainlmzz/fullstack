@@ -16,7 +16,6 @@ const App = () => {
 
     if (persons.some(person => person.name === newName))  {
       window.alert(`${newName} löytyy jo puhelinluettelosta`)
-      /* vendors contains the element we're looking for */
     }
     else {
       setPersons(persons.concat(nameObject))
