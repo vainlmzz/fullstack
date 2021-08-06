@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Person from './components/Person'
+import Filter from './components/Filter'
+import Form from './components/Form'
 
 const App = () => {
   const [ persons, setPersons] = useState([
@@ -12,6 +15,8 @@ const App = () => {
   const [ newNum, setNewNum ] = useState('')
   const [ filter, setFilter] = useState('')
 
+  
+  
   const addNum = (event) => {
     event.preventDefault()
     const nameObject = {
@@ -19,7 +24,7 @@ const App = () => {
       number: newNum
     }
     if (persons.some(person => person.name === newName || newName.length === 0) )  {
-      window.alert(`${newName} löytyy jo puhelinluettelosta tai numerolla ei ole nimeä`)
+      window.alert(`${newName} löytyy jo puhelinluettelosta tai jokin kenttä on tyhjä`)
     }
     else {
       setPersons(persons.concat(nameObject))
@@ -29,15 +34,12 @@ const App = () => {
   }
 
 
-  
   const handleFilterChange = (event) => {
     console.log(event.target.value)
     setFilter(event.target.value)
-    
-    
   }
 
-
+  
   const handleNameChange = (event) => {
     console.log(event.target.value)
     setNewName(event.target.value)
@@ -53,47 +55,27 @@ const App = () => {
     ? persons
     : persons.filter(function(person) {
       return person.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1
-  })
-
+  })  
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <div>filter with: <input value={filter} 
-        onChange={handleFilterChange}
-        /></div>
+      
+      <Filter filter={filter} handleFilterChange={handleFilterChange}/>
+      
       <h2>add a new</h2>
-      <form onSubmit={addNum}>
-        <div>name: <input value={newName} 
-        onChange={handleNameChange}
-        /></div>
-        <div>number: <input value={newNum} 
-        onChange={handleNumChange}
-        /></div>
-        <button type="submit">save</button>
-      </form> 
+      <Form addNum={addNum} handleNameChange={handleNameChange} handleNumChange={handleNumChange} newName={newName} newNum={newNum}/>
       
       <h2>Numbers</h2>
       <ul>
-        {personsToShow.map(person => 
-            <div key={person.name}>{person.name} {person.number}</div>)}
+      {personsToShow.map(person => <div key={person.name}><Person person={person}/></div>)}
+
       </ul>
-      
      
     </div>
   )
 
 }
 
-/*
-<ul>
-  {persons.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
-</ul>
 
-const personsToShow = showAll
-    ? {persons.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
-    : notes.filter(note => note.important === true)
-
-
-*/
 export default App
