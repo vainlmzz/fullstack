@@ -1,21 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Person from './components/Person'
 import Filter from './components/Filter'
 import Form from './components/Form'
 
-const App = () => {
-  const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+import axios from 'axios'
 
+
+
+const App = () => {
+  const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNum, setNewNum ] = useState('')
   const [ filter, setFilter] = useState('')
 
   
+  const koukku = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }
+  useEffect(koukku, [])
+
   
   const addNum = (event) => {
     event.preventDefault()
@@ -24,7 +31,7 @@ const App = () => {
       number: newNum
     }
     if (persons.some(person => person.name === newName || newName.length === 0) )  {
-      window.alert(`${newName} löytyy jo puhelinluettelosta tai jokin kenttä on tyhjä`)
+      window.alert(`${newName} löytyy jo puhelinluettelosta tai nimikenttä on tyhjä`)
     }
     else {
       setPersons(persons.concat(nameObject))
