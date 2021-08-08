@@ -30,8 +30,31 @@ const App = () => {
       name: newName,
       number: newNum
     }
-    if (persons.some(person => person.name === newName || newName.length === 0) )  {
-      window.alert(`${newName} löytyy jo puhelinluettelosta tai nimikenttä on tyhjä`)
+
+    if (newNum.length===0 || newName.length === 0)   {
+      window.alert(`täytä molemmat kentät`)
+    }
+    else if (persons.some(person => person.name === newName && person.number === newNum))   {
+      window.alert(`Numero löytyy jo`)
+      setNewName('')
+      setNewNum('')
+      return
+    }
+    else if (persons.some(person => person.name === newName && person.number !== newNum))  {
+      const id = haeId(newName)
+      
+      
+      if (window.confirm(`${newName} löytyy jo puhelinluettelosta, korvataanko vanha numero numerolla ${newNum}`)) {
+        Persons
+          .muokkaaP(id, nameObject)
+          .then(muokattuP => {
+              persons.splice(id-1,1, muokattuP)
+              setPersons(persons)
+              setNewName('')
+              setNewNum('')
+          })
+
+      }
     }
     else {
 
@@ -45,6 +68,14 @@ const App = () => {
     }  
   }
 
+
+  function haeId(name) {
+    return (
+        persons.find(person => person.name === name).id
+        
+    )
+  }
+
   const delNum = person => {
     
     const nameObject = person
@@ -53,12 +84,22 @@ const App = () => {
     if ( window.confirm(`Poistetaanko ${person.name} luettelosta`)) {
       Persons
       .poistaP(id, nameObject )
-      .then( setPersons(newPersons)) 
+      .then(setPersons(newPersons)) 
     }  
   }
 
 /*
-  const toggleImportanceOf = id => {
+
+persons[persons.map((person, id) => [id, person]).filter(person => person[id] == nameObject)[0][0]] = muokattuP
+
+Persons
+        .muokkaaP(nameObject)
+        .then(muokattuP => {
+            //setPersons(persons.concat(luotuP))
+            setNewName('')
+            setNewNum('')
+          })
+
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
   
@@ -73,7 +114,6 @@ const App = () => {
       )
       setNotes(notes.filter(n => n.id !== id))
     })    
-  }
   
 */
 
