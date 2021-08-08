@@ -29,6 +29,6 @@ const muokkaaP = (id, nameObject) => {
     return request.then(response => response.data)
     
 }
-//request.then(response => response.data)
+
 
 export default { haeKaikki,luoP,poistaP, muokkaaP }

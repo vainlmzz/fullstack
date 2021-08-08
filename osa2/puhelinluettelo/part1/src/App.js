@@ -88,34 +88,7 @@ const App = () => {
     }  
   }
 
-/*
 
-persons[persons.map((person, id) => [id, person]).filter(person => person[id] == nameObject)[0][0]] = muokattuP
-
-Persons
-        .muokkaaP(nameObject)
-        .then(muokattuP => {
-            //setPersons(persons.concat(luotuP))
-            setNewName('')
-            setNewNum('')
-          })
-
-    const note = notes.find(n => n.id === id)
-    const changedNote = { ...note, important: !note.important }
-  
-    noteService
-    .update(id, changedNote)
-      .then(returnedNote => {
-      setNotes(notes.map(note => note.id !== id ? note : returnedNote))
-    })
-    .catch(error => {
-      alert(
-        `the note '${note.content}' was already deleted from server`
-      )
-      setNotes(notes.filter(n => n.id !== id))
-    })    
-  
-*/
 
   const handleFilterChange = (event) => {
     console.log(event.target.value)
