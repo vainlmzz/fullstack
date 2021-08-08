@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Person from './components/Person'
 import Filter from './components/Filter'
 import Form from './components/Form'
+import Persons from './services/persons'
 
-import axios from 'axios'
 
 
 
@@ -15,10 +15,10 @@ const App = () => {
 
   
   const koukku = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    Persons
+      .haeKaikki()
+      .then(personS => {
+        setPersons(personS)
       })
   }
   useEffect(koukku, [])
@@ -35,16 +35,47 @@ const App = () => {
     }
     else {
 
-      axios
-    .post('http://localhost:3001/persons', nameObject)
-    .then(response => {
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNum('')
-    })
+      Persons
+        .luoP(nameObject)
+        .then(luotuP => {
+            setPersons(persons.concat(luotuP))
+            setNewName('')
+            setNewNum('')
+          })
     }  
   }
 
+  const delNum = person => {
+    
+    const nameObject = person
+    const id = person.id
+    const newPersons = persons.filter(person => person.id !== id)
+    if ( window.confirm(`Poistetaanko ${person.name} luettelosta`)) {
+      Persons
+      .poistaP(id, nameObject )
+      .then( setPersons(newPersons)) 
+    }  
+  }
+
+/*
+  const toggleImportanceOf = id => {
+    const note = notes.find(n => n.id === id)
+    const changedNote = { ...note, important: !note.important }
+  
+    noteService
+    .update(id, changedNote)
+      .then(returnedNote => {
+      setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+    })
+    .catch(error => {
+      alert(
+        `the note '${note.content}' was already deleted from server`
+      )
+      setNotes(notes.filter(n => n.id !== id))
+    })    
+  }
+  
+*/
 
   const handleFilterChange = (event) => {
     console.log(event.target.value)
@@ -61,6 +92,7 @@ const App = () => {
     console.log(event.target.value)
     setNewNum(event.target.value)
   }
+  
 
 
   const personsToShow = filter.length===0
@@ -80,8 +112,8 @@ const App = () => {
       
       <h2>Numbers</h2>
       <ul>
-      {personsToShow.map(person => <div key={person.name}><Person person={person}/></div>)}
-
+      {personsToShow.map(person => <div key={person.name}><Person person={person} poisto={() => delNum(person)}/></div>)}
+      
       </ul>
      
     </div>
