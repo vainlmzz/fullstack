@@ -6,6 +6,8 @@ import axios from 'axios'
 
 
 const Country = ({country}) => {
+
+  
   return (
     <div> 
         <h1> {country.name} </h1>
@@ -20,9 +22,9 @@ const Country = ({country}) => {
         </p>
     </div>
   )
-
-
+  
 }
+
 
 
 
@@ -31,9 +33,24 @@ const App = () => {
   const [ countries, setCountries] = useState([])
   const [ filter, setFilter] = useState('')
   
+
+  
   const len = countries.filter(function(country) {
     return country.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1
-})
+  })
+
+  
+
+  function funktio(country) {
+    setFilter(country.name)
+    return (
+      <div>
+        <Country country={country}/>
+      </div>
+      
+    )
+    
+  }
 
   const koukku = () => {
     axios
@@ -45,48 +62,35 @@ const App = () => {
   useEffect(koukku, [])
 
 
-  
-
-  
 
 
 function filterCountries(countries) {
     return filter.length === 0  ? countries.map(country => <div key={country.name}>{country.name}</div>)
-         : len.length >= 10      ? <p> Liikaa maita, tarkenna hakua</p>
-         : len.length === 1 ? len.map(country => <div key={country.name}><Country country={country}/></div>)
-         : len.length === 0 ? <p> Ei sopivia maita</p>
-         : len.map(country => <div key={country.name}>{country.name}</div>)
+         : len.length >= 10     ? <p> Liikaa maita, tarkenna hakua</p>
+         : len.length === 1     ? len.map(country => <div key={country.name}> {country.name}<Country country={country}/></div>)
+         : len.map(country => <div key={country.name}>{country.name} <button onClick={() => funktio(country)}>show</button> </div>)
  
+         
 }
+
+
 
 
   const handleFilterChange = (event) => {
     console.log(event.target.value)
     setFilter(event.target.value)
   }
-
-
-  
-
-
     return (
-      <div>
-      
+      <div>   
       <div>filter with: <input value={filter} 
         onChange={handleFilterChange}
         /></div>
-      
       <ul>
-      
       {filterCountries(countries)}
-       
-      
       </ul>
-     
     </div>
     )
   }
-
 
 
 export default App
