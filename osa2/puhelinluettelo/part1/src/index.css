@@ -34,6 +34,18 @@ ul {
   
 }
 
+
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  
+  border-radius: 30px;
+  padding: 10px;
+  
+  
+}
+
 /*
 
 border: solid;

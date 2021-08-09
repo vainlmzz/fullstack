@@ -6,8 +6,17 @@ const Notification = ({ message, name }) => {
     if (message === null) {
       return null
     }
-  
-    return (
+
+    
+    if (message === "on poistettu jo palvelimelta") {
+      return (
+        <div className="error">
+          {name} {message} 
+        </div>
+      )
+    }
+    
+    else return (
       <div className="message">
         {message} {name}
       </div>

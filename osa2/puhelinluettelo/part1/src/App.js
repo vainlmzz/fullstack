@@ -16,6 +16,7 @@ const App = () => {
   const [ newNum, setNewNum ] = useState('')
   const [ filter, setFilter] = useState('')
   const [ successMessage, setSuccessMessage] = useState(null)
+  const [ errorMessage, setErrorMessage] = useState(null)
 
 
   
@@ -59,12 +60,22 @@ const App = () => {
               setPersons(persons)
               setNewName('')
               setNewNum('')
+              setSuccessMessage( <Notification message={'Muokattu'} name={newName}/>)
+              setTimeout(() => {
+              setSuccessMessage(null)
+            }, 3000)
               
           })
-          setSuccessMessage( <Notification message={'Muokattu'} name={newName}/>)
-          setTimeout(() => {
-            setSuccessMessage(null)
-          }, 3000)
+          .catch(error => {
+            setErrorMessage( <Notification message={"on valitettavasti poistettu jo palvelimelta"} name={newName}/>)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 3000)
+            setPersons(persons.filter(person => person.id !== id))
+            setNewName('')
+            setNewNum('')
+          })
+          
       }
     }
     else {
@@ -75,12 +86,12 @@ const App = () => {
             setPersons(persons.concat(luotuP))
             setNewName('')
             setNewNum('')
-            
-          })
-          setSuccessMessage( <Notification message={'Lisätty '} name={newName}/>)
-          setTimeout(() => {
+            setSuccessMessage( <Notification message={'Lisätty '} name={newName}/>)
+            setTimeout(() => {
             setSuccessMessage(null)
           }, 3000)
+            
+          })
     }  
    
   }
@@ -109,11 +120,11 @@ const App = () => {
       Persons
       .poistaP(id, nameObject )
       .then(setPersons(newPersons)) 
-    }  
-    setSuccessMessage( <Notification message={'Poistettu '} name={person.name}/>)
-          setTimeout(() => {
-            setSuccessMessage(null)
+        setSuccessMessage( <Notification message={'Poistettu '} name={person.name}/>)
+        setTimeout(() => {
+        setSuccessMessage(null)
           }, 3000)
+    }  
   }
 
 
@@ -146,6 +157,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Notification message={successMessage} />
+      <Notification message={errorMessage} />
       
       <Filter filter={filter} handleFilterChange={handleFilterChange}/>
       
