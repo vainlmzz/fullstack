@@ -11,3 +11,44 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1 {
+  
+  font-style: italic;
+}
+
+ul {
+  color: grey;
+  padding-top: 3px;
+  font-size: 15px;
+}
+
+.message {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  
+  border-radius: 30px;
+  padding: 10px;
+  
+  
+}
+
+/*
+
+border: solid;
+  border-color:green;
+  padding: 1px;
+  
+  border-width: 2px 4px;
+  border-radius: 40px;      
+  font-size: larger;
+  font-family: 'Times New Roman', Times, serif;
+font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+
+
+*/

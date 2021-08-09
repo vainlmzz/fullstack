@@ -3,6 +3,9 @@ import Person from './components/Person'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Persons from './services/persons'
+import Notification from './components/Notification'
+
+
 
 
 
@@ -12,6 +15,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNum, setNewNum ] = useState('')
   const [ filter, setFilter] = useState('')
+  const [ successMessage, setSuccessMessage] = useState(null)
+
 
   
   const koukku = () => {
@@ -42,18 +47,24 @@ const App = () => {
     }
     else if (persons.some(person => person.name === newName && person.number !== newNum))  {
       const id = haeId(newName)
+      const alku = haeIndeksi(id)
       
       
       if (window.confirm(`${newName} löytyy jo puhelinluettelosta, korvataanko vanha numero numerolla ${newNum}`)) {
         Persons
           .muokkaaP(id, nameObject)
           .then(muokattuP => {
-              persons.splice(id-1,1, muokattuP)
+              
+              persons.splice(alku,1, muokattuP)
               setPersons(persons)
               setNewName('')
               setNewNum('')
+              
           })
-
+          setSuccessMessage( <Notification message={'Muokattu'} name={newName}/>)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 3000)
       }
     }
     else {
@@ -64,14 +75,27 @@ const App = () => {
             setPersons(persons.concat(luotuP))
             setNewName('')
             setNewNum('')
+            
           })
+          setSuccessMessage( <Notification message={'Lisätty '} name={newName}/>)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 3000)
     }  
+   
   }
 
 
   function haeId(name) {
     return (
         persons.find(person => person.name === name).id
+        
+    )
+  }
+
+  function haeIndeksi(id) {
+    return (
+        persons.findIndex(person => person.id === id)
         
     )
   }
@@ -86,6 +110,10 @@ const App = () => {
       .poistaP(id, nameObject )
       .then(setPersons(newPersons)) 
     }  
+    setSuccessMessage( <Notification message={'Poistettu '} name={person.name}/>)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 3000)
   }
 
 
@@ -117,6 +145,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={successMessage} />
       
       <Filter filter={filter} handleFilterChange={handleFilterChange}/>
       
