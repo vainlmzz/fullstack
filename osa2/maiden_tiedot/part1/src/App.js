@@ -1,30 +1,6 @@
 import React, { useState, useEffect } from 'react'
-
+import Country from './components/Country'
 import axios from 'axios'
-
-
-
-
-const Country = ({country}) => {
-
-  
-  return (
-    <div> 
-        <h1> {country.name} </h1>
-        <div> capital: {country.capital}</div>
-        <div> population: {country.population}</div>
-        <h2> languages </h2>
-        <ul>
-            {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
-        </ul>
-        <p>
-        <img src={country.flag} alt="flag" width="300" height="200"></img>
-        </p>
-    </div>
-  )
-  
-}
-
 
 
 
@@ -60,6 +36,8 @@ const App = () => {
       })
   }
   useEffect(koukku, [])
+
+  
 
 
 
