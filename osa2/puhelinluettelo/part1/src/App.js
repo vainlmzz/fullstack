@@ -67,7 +67,7 @@ const App = () => {
               
           })
           .catch(error => {
-            setErrorMessage( <Notification message={"on valitettavasti poistettu jo palvelimelta"} name={newName}/>)
+            setErrorMessage( <Notification message={`${newName}on valitettavasti poistettu jo palvelimelta`} name={'error'}/>)
             setTimeout(() => {
               setErrorMessage(null)
             }, 3000)
@@ -83,18 +83,24 @@ const App = () => {
       Persons
         .luoP(nameObject)
         .then(luotuP => {
-            setPersons(persons.concat(luotuP))
-            setNewName('')
-            setNewNum('')
-            setSuccessMessage( <Notification message={'Lisätty '} name={newName}/>)
-            setTimeout(() => {
+          setPersons(persons.concat(luotuP))
+          setNewName('')
+          setNewNum('')
+          setSuccessMessage( <Notification message={'Lisätty '} name={newName}/>)
+          setTimeout(() => {
             setSuccessMessage(null)
-          }, 3000)
-            
-          })
-    }  
-   
-  }
+          }, 3000)    
+        })
+        .catch(error => {
+          console.log(error.response)
+          setErrorMessage( <Notification message={error.response.data.error} name={'error'}/>)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 3000) 
+        })
+  }  
+ 
+}
 
 
   function haeId(name) {
@@ -156,7 +162,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={successMessage} />
+      
       <Notification message={errorMessage} />
       
       <Filter filter={filter} handleFilterChange={handleFilterChange}/>
@@ -174,6 +180,11 @@ const App = () => {
   )
 
 }
+
+
+/*
+<Notification message={successMessage} />
+*/
 
 
 export default App

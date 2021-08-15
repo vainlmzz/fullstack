@@ -8,10 +8,10 @@ const Notification = ({ message, name }) => {
     }
 
     
-    if (message === "on poistettu jo palvelimelta") {
+    if (name === "error") {
       return (
         <div className="error">
-          {name} {message} 
+          {message} 
         </div>
       )
     }
