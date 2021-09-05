@@ -55,8 +55,6 @@ const blogSchema = mongoose.Schema({
 
 
 /*
-saa post toimimaan että palauttaa 201
-ja
-mongo url env
+toimiva npm-projekti ilman erittelyä moduuleihin
 
 */
