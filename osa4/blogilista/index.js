@@ -13,7 +13,7 @@ const blogSchema = mongoose.Schema({
   
   const Blog = mongoose.model('Blog', blogSchema)
   
-  const mongoUrl = 'mongodb+srv://fullstack:<password>@cluster0.4dbqx.mongodb.net/bloglist?retryWrites=true&w=majority'
+  const mongoUrl = 'mongodb+srv://fullstack:<SALASANATÄHÄN>@cluster0.4dbqx.mongodb.net/bloglist?retryWrites=true&w=majority'
   mongoose.connect(mongoUrl)
   
   app.use(cors())
@@ -27,10 +27,19 @@ const blogSchema = mongoose.Schema({
       })
   })
 
+
+
   
   
   app.post('/api/blogs', (request, response) => {
-    const blog = new Blog(request.body)
+    
+    
+    const blog = new Blog({
+      title: request.body.title,
+      author: request.body.author,
+      url: request.body.url,
+      likes: request.body.likes
+    })
   
     blog
       .save()
@@ -40,6 +49,14 @@ const blogSchema = mongoose.Schema({
   })
   
   const PORT = 3003
-app.listen(PORT, () => {
+  app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+
+/*
+saa post toimimaan että palauttaa 201
+ja
+mongo url env
+
+*/
