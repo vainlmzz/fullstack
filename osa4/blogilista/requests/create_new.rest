@@ -2,5 +2,5 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-"title": "Juorukello", "author": "anonyymi", "url": "juorukello.com", "likes": 11
+"title": "Aurinkomatkoilla", "author": "Elisa Falla", "url": "seikkalija.es", "likes": 7
 }
