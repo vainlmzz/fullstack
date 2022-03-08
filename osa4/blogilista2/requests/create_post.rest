@@ -1,0 +1,6 @@
+POST http://localhost:3003/api/blogs/
+Content-Type: application/json
+
+{
+"title": "Koodausta päivittäin", "author": "Jukka Pelonen", "url": "koodarinpaivakirja.fi", "likes": 1
+}
