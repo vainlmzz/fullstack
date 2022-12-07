@@ -43,20 +43,6 @@ describe('favorite blog', () => {
       
     })
 
-    /*
 
-    test('multiple favorite blogs', () => {
-        const result = listHelper.favoriteBlog(blogs2)
-
-        const goal = {
-            title: "Minä ja muoti",
-            author: "Outi Pekkanen",
-            url: "muotiblogi.fi",
-            likes: 13,
-            id: "6134f492dbb2c0d60082e6eb"
-          };
-          expect(result).toEqual(goal)
-          
-    })*/
 
 })
