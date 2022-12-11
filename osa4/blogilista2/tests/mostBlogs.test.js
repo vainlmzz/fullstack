@@ -52,10 +52,10 @@ describe('most blogs', () => {
       }  
     ]
   
-    
+    //kirjoittaja, jolla on eniten blogeja
     test('most blogs', () => {
       const result = listHelper.mostBlogs(blogs)
-      console.log(result);
+      console.log("eniten blogeja on ",result.author," " + "(",result.count,")");
       const goal = {
         author: "Edsger W. Dijkstra",
         count: 3

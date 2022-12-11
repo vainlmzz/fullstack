@@ -34,12 +34,15 @@ describe('favorite blog', () => {
       }      
     ]
 
-
+    // millä blogilla on eniten tykkäyksiä
     test('favorite blog', () => {
       const result = listHelper.favoriteBlog(blogs)
+      console.log("suosituin blogi palauttaa: ", result.title+" "+result.author+" "+result.likes)
 
-      const goal = 13;
-      expect(result).toEqual(goal)
+      const goal = {
+        likes: 13
+      } 
+      expect(result.likes).toEqual(goal.likes)
       
     })
 

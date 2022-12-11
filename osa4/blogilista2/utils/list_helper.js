@@ -13,9 +13,7 @@ const favoriteBlog = (blogs) => {
     const favorite = blogs.reduce(function(edel, seur) {
       return (edel.likes > seur.likes) ? edel : seur
     }) 
-    console.log("FavoriteBlog on",favorite)
-    return favorite.likes
-    
+    return favorite 
   }
 
 const mostBlogs = (blogs) => {
@@ -37,17 +35,33 @@ const mostBlogs = (blogs) => {
         }
         kpl=0;
     }
+   
     return blog = {author,count};
+    }
+
+  
+  const mostLikes = (blogs) => {
+    
+    likesByAuthor = Array.from(
+        blogs.reduce(
+            (blog, { author, likes }) => blog.set(author, (blog.get(author) || 0) + likes),
+            new Map
+        ).entries(),
+        ([author, likes]) => ({ author, likes })
+    );
+    
+  console.log(likesByAuthor);
+  let mostLikes = likesByAuthor.reduce((max, author) => max.likes > author.likes ? max : author);
+  return mostLikes;
 
     }
 
-     
-    
 
 
   module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
   }
