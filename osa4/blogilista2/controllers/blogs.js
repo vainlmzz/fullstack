@@ -13,7 +13,14 @@ const blogSchema = mongoose.Schema({
   const Blog = mongoose.model('Blog', blogSchema)
 */
 
-blogsRouter.get('/', (request, response) => {
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
+})
+
+
+  /*
+  blogsRouter.get('/', (request, response) => {
     Blog
       .find({})
       .then(blogs => {
@@ -21,7 +28,7 @@ blogsRouter.get('/', (request, response) => {
       })
   })
 
-  /*
+
   blogsRouter.post('/', (request, response) => {
     
     
