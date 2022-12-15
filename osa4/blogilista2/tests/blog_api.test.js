@@ -45,6 +45,25 @@ test('all blogs are returned', async() => {
     expect(response.body).toHaveLength(initialBlogs.length)
 })
 
+test('id is not _id', async() => {
+    const response = await api.get('/api/blogs')
+    
+    // getting the _id field
+    const _id = response.body.map(response => response._id)
+    // getting the normal id field
+    const id = response.body.map(response => response.id)
+
+    console.log("_id", _id)
+    console.log("id", id)
+    console.log("koko array", response.body)
+
+    //There is no _id field so _id should be undefined 
+    expect(_id[0]).toBeUndefined()
+    //There is id field so id should be defined
+    expect(id[0]).toBeDefined()
+
+  })
+
 
 afterAll(() => {
   mongoose.connection.close()

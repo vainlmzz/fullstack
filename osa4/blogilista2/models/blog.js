@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 
-const blogSchema = new mongoose.Schema({
+  const blogSchema = new mongoose.Schema({
     title: String,
     author: String,
     url: String,
@@ -15,6 +15,7 @@ const blogSchema = new mongoose.Schema({
       delete returnedObject.__v
     }
   })
+
 
 
 module.exports = mongoose.model('Blog', blogSchema)
