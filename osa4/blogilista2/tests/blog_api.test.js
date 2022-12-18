@@ -64,6 +64,41 @@ test('id is not _id', async() => {
 
   })
 
+  test('new blogs can be added', async() => {
+
+    const newBlog = {
+      title: "Aurinkomatkoilla",
+      author: "Elisa Falla",
+      url: "seikkailija.es",
+      likes: 7,
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    console.log(response.body)
+
+    const author = response.body.map(blog => blog.author)
+    const title = response.body.map(blog => blog.title)
+    const url = response.body.map(blog => blog.url)
+    const likes = response.body.map(blog => blog.likes)
+    const id = response.body.map(blog => blog.id)
+
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(author).toBeDefined()
+    expect(author).toContain('Elisa Falla')
+    expect(title).toContain('Aurinkomatkoilla')
+    expect(url).toContain('seikkailija.es')
+    expect(likes).toContain(7)
+    expect(id).toBeDefined()
+  
+  })
+
 
 afterAll(() => {
   mongoose.connection.close()
