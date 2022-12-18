@@ -27,8 +27,9 @@ blogsRouter.get('/', async (request, response) => {
         response.json(blogs)
       })
   })
+  */
 
-
+  /*
   blogsRouter.post('/', (request, response) => {
 
     
@@ -47,24 +48,38 @@ blogsRouter.get('/', async (request, response) => {
         response.status(201).json(result)
       })
   })
-
   */
+  
 
   blogsRouter.post('/', async (request, response) => {
+
+    if(request.body.likes >= 0) {
 
       const blog = new Blog({
         title: request.body.title,
         author: request.body.author,
         url: request.body.url,
         likes: request.body.likes
-
       })
- 
       const addedBlog = await blog.save()
       response.status(201).json(addedBlog)
-    })
     
-  
+    }
+
+    else {
+
+      const blog = new Blog({
+        title: request.body.title,
+        author: request.body.author,
+        url: request.body.url,
+        likes: 0
+      })
+
+      const addedBlog = await blog.save()
+      response.status(201).json(addedBlog)
+
+    }
+    })
 
 
 module.exports = blogsRouter

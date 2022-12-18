@@ -31,7 +31,7 @@ const initialBlogs = [
     await blogObject.save()
   })
 
-
+/*
 test('blogs are returned/ HTTP Get works', async () => {
   await api
     .get('/api/blogs')
@@ -70,7 +70,7 @@ test('id is not _id', async() => {
       title: "Aurinkomatkoilla",
       author: "Elisa Falla",
       url: "seikkailija.es",
-      likes: 7,
+      likes: 0,
     }
   
     await api
@@ -97,6 +97,37 @@ test('id is not _id', async() => {
     expect(likes).toContain(7)
     expect(id).toBeDefined()
   
+  })
+
+  */
+
+  test('if there are no likes, set it as zero', async() => {  
+    
+    const newBlog = {
+      title: "Hevoset",
+      author: "Pekka Airisto",
+      url: "hevonen.fi",
+      likes: 9
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    console.log(response.body)
+
+    const likes = response.body.map(blog => blog.likes)
+    console.log(likes)
+
+    
+    //expect(likes[2]).toBeGreaterThanOrEqual(0)
+    for(let i=0; i < likes.length; i++) { 
+      expect(likes[i]).toBeGreaterThanOrEqual(0)
+    }
+
   })
 
 
