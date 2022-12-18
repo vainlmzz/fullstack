@@ -31,7 +31,7 @@ const initialBlogs = [
     await blogObject.save()
   })
 
-/*
+
 test('blogs are returned/ HTTP Get works', async () => {
   await api
     .get('/api/blogs')
@@ -70,7 +70,7 @@ test('id is not _id', async() => {
       title: "Aurinkomatkoilla",
       author: "Elisa Falla",
       url: "seikkailija.es",
-      likes: 0,
+      likes: 7,
     }
   
     await api
@@ -99,7 +99,6 @@ test('id is not _id', async() => {
   
   })
 
-  */
 
   test('if there are no likes, set it as zero', async() => {  
     
