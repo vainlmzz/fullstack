@@ -80,7 +80,7 @@ test('id is not _id', async() => {
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    console.log(response.body)
+    //console.log(response.body)
 
     const author = response.body.map(blog => blog.author)
     const title = response.body.map(blog => blog.title)
@@ -116,10 +116,10 @@ test('id is not _id', async() => {
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    console.log(response.body)
+    //console.log(response.body)
 
     const likes = response.body.map(blog => blog.likes)
-    console.log(likes)
+    //console.log(likes)
 
     
     //expect(likes[2]).toBeGreaterThanOrEqual(0)
@@ -127,6 +127,24 @@ test('id is not _id', async() => {
       expect(likes[i]).toBeGreaterThanOrEqual(0)
     }
 
+  })
+
+
+  test('A blog must contain title and url', async() => {  
+    
+    const newBlog = {
+      title: "Avoimia Tarinoita",
+      author: "Julius Pekkarinen",
+      url: "",
+      likes: 2
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+
+    
   })
 
 
