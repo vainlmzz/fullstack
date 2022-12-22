@@ -2,67 +2,33 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const initialBlogs = [
-    {
-    title: "Juorukello",
-    author: "anonyymi",
-    url: "juorukello.com",
-    likes: 11,
-    id: "6135077a6eecceadbf60cb91"
-    },
-    {
-    title: "Minä ja muoti",
-    author: "Outi Pekkanen",
-    url: "muotiblogi.fi",
-    likes: 13,
-    id: "6134f492dbb2c0d60082e6eb"
-    },
-    ]
 
-  
+
+describe('ADDING NEW BLOGS', () => { 
+
   beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+  test('blogs are returned/ HTTP Get works', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      //.expect('Content-Type', /application\/json/)
   })
 
 
-test('blogs are returned/ HTTP Get works', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    //.expect('Content-Type', /application\/json/)
-})
-
-test('all blogs are returned', async() => {
+  test('all blogs are returned', async() => {
     const response = await api.get('/api/blogs')
 
-    expect(response.body).toHaveLength(initialBlogs.length)
-})
-
-test('id is not _id', async() => {
-    const response = await api.get('/api/blogs')
-    
-    // getting the _id field
-    const _id = response.body.map(response => response._id)
-    // getting the normal id field
-    const id = response.body.map(response => response.id)
-
-    console.log("_id", _id)
-    console.log("id", id)
-    console.log("koko array", response.body)
-
-    //There is no _id field so _id should be undefined 
-    expect(_id[0]).toBeUndefined()
-    //There is id field so id should be defined
-    expect(id[0]).toBeDefined()
-
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
+
 
   test('new blogs can be added', async() => {
 
@@ -89,7 +55,7 @@ test('id is not _id', async() => {
     const id = response.body.map(blog => blog.id)
 
 
-    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
     expect(author).toBeDefined()
     expect(author).toContain('Elisa Falla')
     expect(title).toContain('Aurinkomatkoilla')
@@ -99,6 +65,30 @@ test('id is not _id', async() => {
   
   })
 
+})
+
+
+
+describe('BLOG FORMAT IS CORRECT', () => {
+  
+  test('id is not _id', async() => {
+    const response = await api.get('/api/blogs')
+    
+    // getting the _id field
+    const _id = response.body.map(response => response._id)
+    // getting the normal id field
+    const id = response.body.map(response => response.id)
+
+    console.log("_id", _id)
+    console.log("id", id)
+    console.log("koko array", response.body)
+
+    //There is no _id field so _id should be undefined 
+    expect(_id[0]).toBeUndefined()
+    //There is id field so id should be defined
+    expect(id[0]).toBeDefined()
+
+  })
 
   test('if there are no likes, set it as zero', async() => {  
     
@@ -129,7 +119,6 @@ test('id is not _id', async() => {
 
   })
 
-
   test('A blog must contain title and url', async() => {  
     
     const newBlog = {
@@ -147,6 +136,41 @@ test('id is not _id', async() => {
     
   })
 
+})
+
+
+describe('DELETING BLOGS', () => {
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+  })
+
+
+  test('Deleting a blog', async() => { 
+
+    console.log(helper.initialBlogs)
+
+    const blogsAtStart = await helper.blogsInDB()
+
+    const blogToDelete = blogsAtStart[0]
+    
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+      
+      const blogsAtEnd = await helper.blogsInDB()
+      console.log(blogsAtEnd)
+      expect(blogsAtEnd).toHaveLength(
+        helper.initialBlogs.length - 1
+      )
+
+      const titles = blogsAtEnd.map(blog => blog.title)
+
+      expect(titles).not.toContain(blogToDelete.title)
+    
+  })
+})
 
 afterAll(() => {
   mongoose.connection.close()
