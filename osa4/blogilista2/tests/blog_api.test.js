@@ -7,7 +7,6 @@ const helper = require('./test_helper')
 const api = supertest(app)
 
 
-
 describe('ADDING NEW BLOGS', () => { 
 
   beforeEach(async () => {
@@ -79,9 +78,8 @@ describe('BLOG FORMAT IS CORRECT', () => {
     // getting the normal id field
     const id = response.body.map(response => response.id)
 
-    console.log("_id", _id)
-    console.log("id", id)
-    console.log("koko array", response.body)
+    //console.log("_id", _id)
+    //console.log("id", id)
 
     //There is no _id field so _id should be undefined 
     expect(_id[0]).toBeUndefined()
@@ -118,7 +116,7 @@ describe('BLOG FORMAT IS CORRECT', () => {
     }
 
   })
-
+ 
   test('A blog must contain title and url', async() => {  
     
     const newBlog = {
@@ -139,7 +137,7 @@ describe('BLOG FORMAT IS CORRECT', () => {
 })
 
 
-describe('DELETING BLOGS', () => {
+describe('DELETING OR UPDATING BLOGS', () => {
 
   beforeEach(async () => {
     await Blog.deleteMany({})
@@ -149,7 +147,7 @@ describe('DELETING BLOGS', () => {
 
   test('Deleting a blog', async() => { 
 
-    console.log(helper.initialBlogs)
+    //console.log(helper.initialBlogs)
 
     const blogsAtStart = await helper.blogsInDB()
 
@@ -160,7 +158,7 @@ describe('DELETING BLOGS', () => {
       .expect(204)
       
       const blogsAtEnd = await helper.blogsInDB()
-      console.log(blogsAtEnd)
+      //console.log(blogsAtEnd)
       expect(blogsAtEnd).toHaveLength(
         helper.initialBlogs.length - 1
       )
@@ -170,8 +168,29 @@ describe('DELETING BLOGS', () => {
       expect(titles).not.toContain(blogToDelete.title)
     
   })
+
+  test('Updating the likes of a blog', async() => {
+    const blogsAtStart = await helper.blogsInDB()
+    const blogToUpdate = blogsAtStart[0]
+    const newLikes = 2
+
+
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({likes: newLikes})
+      .expect(200)
+    
+      const blogsAtEnd = await helper.blogsInDB()
+      console.log(blogsAtStart, blogsAtEnd)
+    
+      expect(blogsAtStart[0].likes).not.toEqual(blogsAtEnd[0].likes)
+
+  })
 })
 
 afterAll(() => {
   mongoose.connection.close()
 })
+
+// {}

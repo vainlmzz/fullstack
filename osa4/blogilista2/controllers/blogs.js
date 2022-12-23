@@ -99,9 +99,20 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blog)
   })
 
+
   blogsRouter.delete('/:id', async (request,response) => {
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
+  })
+
+
+  blogsRouter.put('/:id', async (request, response) => {
+    const newLikes = request.body.likes
+    //console.log(request.body)
+
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {"likes": newLikes}, {new: true} )
+    //console.log(,updatedBlog)
+    response.status(200).json(updatedBlog)
   })
 
 
