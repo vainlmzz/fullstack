@@ -185,7 +185,7 @@ describe('DELETING OR UPDATING BLOGS', () => {
       .expect(200)
     
       const blogsAtEnd = await helper.blogsInDB()
-      console.log(blogsAtStart, blogsAtEnd)
+      //console.log(blogsAtStart, blogsAtEnd)
     
       expect(blogsAtStart[0].likes).not.toEqual(blogsAtEnd[0].likes)
 
@@ -203,7 +203,7 @@ describe('ADDING USERS IS POSSIBLE', () => {
     await user.save()
   })
 
-  test('Creating a new user and the username does not exist yet', async () => {
+  test('Creating a new user works', async () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -212,18 +212,82 @@ describe('ADDING USERS IS POSSIBLE', () => {
       password: 'tämäonhuonosalasana',
     }
 
-    await api
+    const result = await api
       .post('/api/users')
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
+    console.log("result",result.body)
+
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map(user => user.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('creation fails with proper statuscode and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'WannabeAdmin',
+      password: 'salainen',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    console.log(result.body)
+
+    expect(result.body.error).toContain('username already exists, create a unique one')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('A user must have a username that is at least three characters long', async() => {  
+    
+    const newUser = {
+      username: "JP",
+      name: "Julius Pekkarinen",
+      password: "badpassword"
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+    
+      console.log(result.body)
+      expect(result.body.error).toContain('username must exist or be at least three characters')
+
+  })
+
+  test('A user must have a password that is at least three characters long', async() => { 
+
+    const newUser = {
+      username: "Julius1334",
+      name: "Julius Pekkarinen",
+      password: undefined
+    }
+  
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+    
+      console.log(result.body)
+      expect(result.body.error).toContain('password must exist or be at least three characters')
+
+
+
+  }) 
+
 })
 
 
