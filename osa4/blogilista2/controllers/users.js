@@ -4,14 +4,17 @@ const User = require('../models/user')
 
 
 usersRouter.get('/', async (request, response) => {
-    const users = await User.find({})
+    const users = await User.find({}).populate('blogs', { url: 1, title: 1, author: 1 })
     response.json(users)
   })
 
 usersRouter.post('/', async (request, response) => {
+
+    
   const { username, name, password } = request.body
 
   const existingUser = await User.findOne({ username })
+  
   if (existingUser) {
     return response.status(400).json({
       error: 'username already exists, create a unique one'
@@ -30,19 +33,19 @@ usersRouter.post('/', async (request, response) => {
     })
   }
 
-  // || (existingUser.password === null || existingUser.password === 0 || existingUser.password === undefined)
-
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
+  
   const user = new User({
     username,
     name,
     passwordHash,
   })
 
-  const savedUser = await user.save()
+  
 
+  const savedUser = await user.save()
   response.status(201).json(savedUser)
 })
 

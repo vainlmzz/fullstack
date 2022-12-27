@@ -2,5 +2,5 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-"title": "Opiskeluvinkit", "author": "Ella Juurinen", "url": "opiskelua.fi", "likes": 14
+"title": "Koodausta päivittäin", "author": "Julius Pelonen", "url": "koodarinpaivakirja.fi", "likes":24, "userId": "63ab13827d5383582bca9281"
 }

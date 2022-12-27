@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const { request } = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 
 /*
@@ -15,7 +16,7 @@ const blogSchema = mongoose.Schema({
 */
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -54,6 +55,8 @@ blogsRouter.get('/', async (request, response) => {
 
   blogsRouter.post('/', async (request, response) => {
 
+    const user = await User.findById(request.body.userId)
+
     // A blog must contain title and url, if not, it returns bad request
     if((request.body.title === null || request.body.title.length === 0 ) || (request.body.url === null || request.body.url.length === 0))  { 
       response.status(400).json(request.body)
@@ -67,8 +70,12 @@ blogsRouter.get('/', async (request, response) => {
             title: request.body.title,
             author: request.body.author,
             url: request.body.url,
-            likes: request.body.likes
+            likes: request.body.likes,
+            user: user._id
           })
+          
+          user.blogs = user.blogs.concat(blog._id)
+          await user.save()
           const addedBlog = await blog.save()
           response.status(201).json(addedBlog)
         
@@ -80,9 +87,13 @@ blogsRouter.get('/', async (request, response) => {
             title: request.body.title,
             author: request.body.author,
             url: request.body.url,
-            likes: 0
+            likes: 0,
+            user: user._id
           })
 
+          
+          user.blogs = user.blogs.concat(blog._id)
+          await user.save()
           const addedBlog = await blog.save()
           response.status(201).json(addedBlog)
 
