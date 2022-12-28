@@ -1,7 +1,8 @@
 const blogsRouter = require('express').Router()
-const { request } = require('../app')
+//const { request } = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 
 /*
@@ -53,9 +54,24 @@ blogsRouter.get('/', async (request, response) => {
   */
   
 
+  const tokenFromRequest = request => {
+    const authorization = request.get('authorization')
+    if(authorization && authorization.toLowerCase().startsWith('bearer ')) {
+      return authorization.substring(7)
+    }
+    //return null
+  }
+
   blogsRouter.post('/', async (request, response) => {
 
-    const user = await User.findById(request.body.userId)
+    //const body = request.body
+    const token = tokenFromRequest(request)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({error: "token invalid or missing"})
+    }
+
+    const user = await User.findById(decodedToken.id)
 
     // A blog must contain title and url, if not, it returns bad request
     if((request.body.title === null || request.body.title.length === 0 ) || (request.body.url === null || request.body.url.length === 0))  { 
