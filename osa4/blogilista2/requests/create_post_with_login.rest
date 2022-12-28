@@ -1,9 +1,9 @@
 
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGxlMTI4NyIsImlkIjoiNjNhYjEzODI3ZDUzODM1ODJiY2E5MjgxIiwiaWF0IjoxNjcyMjM0MDE3fQ.It1o5GPx_7iA6WVvB621RgDIaTv9l11bPH8qv5sukuU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGxlMTI4NyIsImlkIjoiNjNhYjEzODI3ZDUzODM1ODJiY2E5MjgxIiwiaWF0IjoxNjcyMjQwOTI4fQ.cucyrZIhf5HbPQnWp5q285d4c1w0CXVCqciwO4ub4Hs
 
 {
-    "title": "Hauskimmat vitsit", "author": "Julius Pelonen", "url": "vitsit.com", "likes":19
+    "title": "Hauskimmat videot", "author": "Julius Pelonen", "url": "videot.com", "likes":21
 
 }
