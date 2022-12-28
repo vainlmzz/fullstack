@@ -1,3 +1,5 @@
 node_modules
 .env
 requests/create_post_with_login.rest
+requests/delete_authorized.rest
+requests/create_login.rest
