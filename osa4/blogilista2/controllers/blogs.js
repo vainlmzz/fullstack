@@ -72,7 +72,7 @@ blogsRouter.get('/', async (request, response) => {
       return response.status(401).json({error: "token invalid or missing"})
     }
 
-    const user = await User.findById(decodedToken.id)
+    const user = request.user // await User.findById(decodedToken.id)
 
     // A blog must contain title and url, if not, it returns bad request
     if((request.body.title === null || request.body.title.length === 0 ) || (request.body.url === null || request.body.url.length === 0))  { 
@@ -118,8 +118,6 @@ blogsRouter.get('/', async (request, response) => {
     }
   })
 
-
-
   blogsRouter.get('/:id', async (request, response) => {
     const id = request.params.id
     const blogs = await Blog.find({})
@@ -138,7 +136,7 @@ blogsRouter.get('/', async (request, response) => {
     }
 
     const blog = await Blog.findById(request.params.id)
-    console.log(blog)
+    console.log("Blog to be deleted",blog)
     
     if (decodedToken.id !== blog.user.toString()){
       return response.status(401).json({error: "This user does not own this blog"})
