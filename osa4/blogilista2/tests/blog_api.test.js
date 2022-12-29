@@ -2,10 +2,11 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const bcrypt = require('bcryptjs')
-const User = require('../models/user')
+
 
 const api = supertest(app)
 
@@ -15,13 +16,14 @@ describe('ADDING NEW BLOGS', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
   })
 
   test('blogs are returned/ HTTP Get works', async () => {
     await api
       .get('/api/blogs')
       .expect(200)
-      //.expect('Content-Type', /application\/json/)
+      .expect('Content-Type', /application\/json/)
   })
 
 
@@ -31,45 +33,61 @@ describe('ADDING NEW BLOGS', () => {
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
+  //Tee myös testi, joka varmistaa että uuden blogin lisäys ei onnistu, ja pyyntö palauttaa oikean 
+  //statuskoodin 401 Unauthorized jos pyynnön mukana ei ole tokenia.
 
-  test('new blogs can be added', async() => {
+  test('new blogs can be added only by authorized user', async() => {
 
-    const newBlog = {
-      title: "Aurinkomatkoilla",
-      author: "Elisa Falla",
-      url: "seikkailija.es",
-      likes: 7,
+    // Luodaan testikäyttäjä
+    const testUser = {
+      username: "testdude",
+      name: "Test Dude",
+      password: "testing123"
     }
+
+    // Lisätään testikäyttäjä tietokantaan
+    await api
+      .post('/api/users')
+      .send(testUser)
+      .expect(201)
+    
+    // kirjaudutaan sisään testkäyttäjällä, jotta saadaan token
+    const res2 = await api
+      .post('/api/login')
+      .send(testUser)
+      .expect(200)
+    console.log(res2.body.token)
+
   
     await api
       .post('/api/blogs')
-      .send(newBlog)
+      .send({
+        title: "Otsikko",
+        author: "kirjottaja",
+        url: "testi.fi",
+        likes: 7,
+      })
+      .set('Authorization', `Bearer ${res2.body.token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
+    
+      await api
+      .post('/api/blogs')
+      .send({
+        title: "Otsikko",
+        author: "kirjottaja",
+        url: "testi.fi",
+        likes: 7,
+      })
+      .set('Authorization', ``)
+      .expect(401)
+      //.expect(result.body.error).toContain('token invalid or missing')
 
-    const response = await api.get('/api/blogs')
-    //console.log(response.body)
-
-    const author = response.body.map(blog => blog.author)
-    const title = response.body.map(blog => blog.title)
-    const url = response.body.map(blog => blog.url)
-    const likes = response.body.map(blog => blog.likes)
-    const id = response.body.map(blog => blog.id)
-
-
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
-    expect(author).toBeDefined()
-    expect(author).toContain('Elisa Falla')
-    expect(title).toContain('Aurinkomatkoilla')
-    expect(url).toContain('seikkailija.es')
-    expect(likes).toContain(7)
-    expect(id).toBeDefined()
-  
-  })
+    const res3 = await api.get('/api/blogs')
+    console.log(res3.body)
+  }) 
 
 })
-
-
 
 describe('BLOG FORMAT IS CORRECT', () => {
   
@@ -91,52 +109,69 @@ describe('BLOG FORMAT IS CORRECT', () => {
 
   })
 
-  test('if there are no likes, set it as zero', async() => {  
-    
-    const newBlog = {
-      title: "Hevoset",
-      author: "Pekka Airisto",
-      url: "hevonen.fi",
-      likes: 9
-    }
+  test('if there are no likes, set it as zero', async() => { 
+
+    // kirjaudutaan sisään testkäyttäjällä, jotta saadaan token
+    const res2 = await api
+      .post('/api/login')
+      .send({
+        username: "testdude",
+        password: "testing123"
+      })
+      .expect(200)
+    console.log(res2.body.token)
+
+
   
     await api
       .post('/api/blogs')
-      .send(newBlog)
+      .set('Authorization', `Bearer ${res2.body.token}`)
+      .send({
+        title: "Otsikko",
+        author: "kirjottaja",
+        url: "testi.fi",
+        likes: null
+      })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    //console.log(response.body)
 
     const likes = response.body.map(blog => blog.likes)
-    //console.log(likes)
-
-    
-    //expect(likes[2]).toBeGreaterThanOrEqual(0)
+    console.log(likes)
     for(let i=0; i < likes.length; i++) { 
       expect(likes[i]).toBeGreaterThanOrEqual(0)
     }
 
   })
- 
+  
   test('A blog must contain title and url', async() => {  
-    
-    const newBlog = {
-      title: "Avoimia Tarinoita",
-      author: "Julius Pekkarinen",
-      url: "",
-      likes: 2
-    }
+
+        // kirjaudutaan sisään testkäyttäjällä, jotta saadaan token
+        const res2 = await api
+        .post('/api/login')
+        .send({
+          username: "testdude",
+          password: "testing123"
+        })
+        .expect(200)
+      console.log(res2.body.token)
+
   
     await api
       .post('/api/blogs')
-      .send(newBlog)
+      .set('Authorization', `Bearer ${res2.body.token}`)
+      .send({
+        title: "Avoimia Tarinoita",
+        author: "Julius Pekkarinen",
+        url: "",
+        likes: 2
+      })
       .expect(400)
 
     
   })
-
+  
 })
 
 
@@ -145,31 +180,57 @@ describe('DELETING OR UPDATING BLOGS', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
   })
 
 
-  test('Deleting a blog', async() => { 
+  test('Deleting a blog by authorized user', async() => { 
 
-    //console.log(helper.initialBlogs)
+    // Luodaan testikäyttäjä
+    const testUser = {
+      username: "testdude",
+      name: "Test Dude",
+      password: "testing123"
+    }
 
-    const blogsAtStart = await helper.blogsInDB()
+    // Lisätään testikäyttäjä tietokantaan
+    await api
+      .post('/api/users')
+      .send(testUser)
+      .expect(201)
+    // haetaan kaikki olemassa olevat käyttäjät
+    const res = await api
+      .get('/api/users')
+    console.log(res.body)
 
-    const blogToDelete = blogsAtStart[0]
+    // kirjaudutaan sisään testkäyttäjällä, jotta saadaan token
+    const res2 = await api
+      .post('/api/login')
+      .send(testUser)
+      .expect(200)
+    console.log(res2.body.token)
+   
+    
+    // lisätään blogi ensin tietokantaan, jotta voidaan poistaa se sieltä
+    const res4 = await api
+    .post('/api/blogs')
+    .send({
+        title: "Otsikko",
+        author: "kirjottaja",
+        url: "testi.fi",
+        likes: 7
+      })
+    .set('Authorization', `Bearer ${res2.body.token}`)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    console.log(res4.body)
     
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${res4.body.id}`)
+      .set('Authorization', `Bearer ${res2.body.token}`)
       .expect(204)
-      
-      const blogsAtEnd = await helper.blogsInDB()
-      //console.log(blogsAtEnd)
-      expect(blogsAtEnd).toHaveLength(
-        helper.initialBlogs.length - 1
-      )
 
-      const titles = blogsAtEnd.map(blog => blog.title)
-
-      expect(titles).not.toContain(blogToDelete.title)
-    
   })
 
   test('Updating the likes of a blog', async() => {
@@ -191,6 +252,7 @@ describe('DELETING OR UPDATING BLOGS', () => {
 
   })
 })
+
 
 describe('ADDING USERS IS POSSIBLE', () => {
  

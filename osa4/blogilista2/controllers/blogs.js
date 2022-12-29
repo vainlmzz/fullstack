@@ -66,12 +66,11 @@ blogsRouter.get('/', async (request, response) => {
 
   blogsRouter.post('/', async (request, response) => {
 
-    //const token = tokenFromRequest(request)
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!request.token || !decodedToken.id) {
+    //const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!request.token || !jwt.verify(request.token, process.env.SECRET)) {
       return response.status(401).json({error: "token invalid or missing"})
     }
-
+  
     const user = request.user // await User.findById(decodedToken.id)
 
     // A blog must contain title and url, if not, it returns bad request
@@ -81,16 +80,15 @@ blogsRouter.get('/', async (request, response) => {
 
 
     else  { 
-        if(request.body.likes >= 0) {
+        if(!request.body.likes) {
 
           const blog = new Blog({
             title: request.body.title,
             author: request.body.author,
             url: request.body.url,
-            likes: request.body.likes,
+            likes: 0,
             user: user._id
           })
-          
           user.blogs = user.blogs.concat(blog._id)
           await user.save()
           const addedBlog = await blog.save()
@@ -104,11 +102,9 @@ blogsRouter.get('/', async (request, response) => {
             title: request.body.title,
             author: request.body.author,
             url: request.body.url,
-            likes: 0,
+            likes: request.body.likes,
             user: user._id
           })
-
-          
           user.blogs = user.blogs.concat(blog._id)
           await user.save()
           const addedBlog = await blog.save()
